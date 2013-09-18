@@ -1,4 +1,4 @@
-errors [![Build Status](https://secure.travis-ci.org/101loops/config.png)](https://travis-ci.org/101loops/config)
+config [![Build Status](https://secure.travis-ci.org/101loops/config.png)](https://travis-ci.org/101loops/config)
 ======
 
 This Go package adds an interface to deal with configuration files.
