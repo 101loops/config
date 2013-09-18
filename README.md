@@ -7,7 +7,7 @@ Noteworthy features:
 - simple file syntax based on sections
 - extraction of Duration and []byte
 - variable substitution
-- overwriting values by comman-line args and environment properties
+- overwriting values by command-line args and environment properties
 - named sub-sections
 - merging of multiple files
 
