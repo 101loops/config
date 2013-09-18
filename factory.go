@@ -1,7 +1,7 @@
 package config
 
 import (
-	"101loops/log"
+	"log"
 	goconf "bitbucket.org/gosimple/conf"
 	"bytes"
 	"flag"
@@ -25,7 +25,7 @@ func NewConf(prefix string, defaultFile string) (*Config, error) {
 
 func load(prefix string, defaultFile string) (*Config, error) {
 	configPath := flag.String("config", defaultFile, "path to the config file(s)")
-	log.Info("loading configuration file(s): '%v'", *configPath)
+	log.Printf("loading configuration file(s): '%v'", *configPath)
 	return loadFromFiles(prefix, *configPath)
 }
 
