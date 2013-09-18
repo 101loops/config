@@ -9,7 +9,7 @@ Noteworthy features:
 - variable substitution
 - overwriting values by command-line args and environment properties
 - named sub-sections
-- merging of multiple files
+- merging multiple files
 
 
 ### Installation
