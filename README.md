@@ -1,7 +1,7 @@
 config [![Build Status](https://secure.travis-ci.org/101loops/config.png)](https://travis-ci.org/101loops/config)
 ======
 
-This Go package adds an interface to deal with configuration files.
+This Go package adds configuration file management.
 
 Noteworthy features:
 - simple file syntax based on sections
