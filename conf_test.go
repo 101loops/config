@@ -100,4 +100,3 @@ func (s *S) TestEnv(c *C) {
 	c.Assert(cf.Env().IsTest(), Equals, false)
 	c.Assert(cf.Env().IsStage(), Equals, false)
 }
-

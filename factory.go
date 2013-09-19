@@ -1,12 +1,12 @@
 package config
 
 import (
-	"log"
 	goconf "bitbucket.org/gosimple/conf"
 	"bytes"
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"strings"
 )
