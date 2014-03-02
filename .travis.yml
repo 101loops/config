@@ -4,7 +4,7 @@ go:
   - 1.2
 
 install:
-  - go get launchpad.net/gocheck
+  - go get github.com/101loops/bdd
   - go get bitbucket.org/gosimple/conf
 
 script: go test -v ./...
