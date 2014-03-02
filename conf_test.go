@@ -1,8 +1,8 @@
 package config
 
 import (
-	. "github.com/101loops/bdd"
 	"fmt"
+	. "github.com/101loops/bdd"
 	"os"
 )
 
@@ -25,40 +25,40 @@ var _ = Describe("Config", func() {
 
 		// ==== extract single section
 
-			mail := testConf.SectionMust("mail")
-			mailPort, _ := mail.Int("port")
-			Check(mailPort, Equals, 25)
-			mailHost, _ := mail.String("host")
-			Check(mailHost, Equals, "smtp.mail.com")
+		mail := testConf.SectionMust("mail")
+		mailPort, _ := mail.Int("port")
+		Check(mailPort, Equals, 25)
+		mailHost, _ := mail.String("host")
+		Check(mailHost, Equals, "smtp.mail.com")
 
-			file := testConf.SectionMust("file")
-			fileSystem, _ := file.String("system")
-			Check(fileSystem, Equals, "s3")
-			fileTmp, _ := file.Bool("tmp")
-			Check(fileTmp, Equals, true)
+		file := testConf.SectionMust("file")
+		fileSystem, _ := file.String("system")
+		Check(fileSystem, Equals, "s3")
+		fileTmp, _ := file.Bool("tmp")
+		Check(fileTmp, Equals, true)
 
-			// ==== extract multiple sections
+		// ==== extract multiple sections
 
-			caches := testConf.Sections("memcache")
-			Check(caches, HasLen, 2)
+		caches := testConf.Sections("memcache")
+		Check(caches, HasLen, 2)
 
-			memcache := caches["default"]
-			Check(memcache, NotNil)
-			cacheHost, _ := memcache.String("host")
-			Check(cacheHost, Equals, "memcache.com")
-			cachePass, _ := memcache.String("pass")
-			Check(cachePass, Equals, "secretpassword")
+		memcache := caches["default"]
+		Check(memcache, NotNil)
+		cacheHost, _ := memcache.String("host")
+		Check(cacheHost, Equals, "memcache.com")
+		cachePass, _ := memcache.String("pass")
+		Check(cachePass, Equals, "secretpassword")
 
-			memcache = caches["backup"]
-			Check(memcache, NotNil)
-			cacheHost, _ = memcache.String("host")
-			//Check(cacheHost, Equals, "memcache.com")
-			cachePass, _ = memcache.String("pass")
-			//Check(cachePass, Equals, "secretpassword")
+		memcache = caches["backup"]
+		Check(memcache, NotNil)
+		cacheHost, _ = memcache.String("host")
+		//Check(cacheHost, Equals, "memcache.com")
+		cachePass, _ = memcache.String("pass")
+		//Check(cachePass, Equals, "secretpassword")
 
-			// ==== extract missing section
+		// ==== extract missing section
 
-			Check(func() { testConf.SectionMust("nonsense") }, Panics)
+		Check(func() { testConf.SectionMust("nonsense") }, Panics)
 	})
 
 	It("env", func() {
