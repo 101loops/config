@@ -15,8 +15,6 @@ type Config struct {
 	prefix   string
 }
 
-// PUBLIC METHODS =================================================================================
-
 // Env returns the configuration's environment value (found in default section 'profile').
 func (conf *Config) Env() Env {
 	env, _ := conf.Sections(defaultSection)["default"].String("env")

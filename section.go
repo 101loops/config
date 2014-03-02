@@ -17,8 +17,6 @@ var (
 	cmdArgs map[string]string
 )
 
-// PUBLIC METHODS =================================================================================
-
 // Id returns the unique identifier of the section ("default" by default).
 func (self *Section) Id() string {
 	return self.id
@@ -120,8 +118,6 @@ func (self *Section) sectionName() (s string) {
 	}
 	return
 }
-
-// HELPERS ========================================================================================
 
 func getArgs() map[string]string {
 	if cmdArgs == nil {

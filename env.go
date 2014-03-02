@@ -2,8 +2,6 @@ package config
 
 type Env string
 
-// PUBLIC METHODS =================================================================================
-
 // IsDev returns true if the environment is 'development' (or empty).
 func (self Env) IsDev() bool {
 	env := string(self)

@@ -11,8 +11,6 @@ import (
 	"strings"
 )
 
-// FACTORY ========================================================================================
-
 // NewConf loads one/multiple configuration files (paths separated by comma);
 // or an error if any of the files couldn't be opened/read.
 // A prefix allows to distinguish environment variables / command-line args meant
@@ -20,8 +18,6 @@ import (
 func NewConf(prefix string, defaultFile string) (*Config, error) {
 	return load(prefix, defaultFile)
 }
-
-// HELPERS ========================================================================================
 
 func load(prefix string, defaultFile string) (*Config, error) {
 	configPath := flag.String("config", defaultFile, "path to the config file(s)")

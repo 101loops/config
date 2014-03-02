@@ -31,8 +31,6 @@ var configTests = []struct {
 	},
 }
 
-// TESTS ==========================================================================================
-
 func (s *S) TestLoadingConfig(c *C) {
 
 	for i, configTest := range configTests {

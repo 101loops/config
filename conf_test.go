@@ -9,8 +9,6 @@ import (
 
 var testConf *Config
 
-// SETUP ==========================================================================================
-
 func (s *S) SetUpTest(c *C) {
 	os.Setenv("MEMCACHE_PASSWORD", "secretpassword")
 
@@ -21,8 +19,6 @@ func (s *S) SetUpTest(c *C) {
 
 	testConf = conf
 }
-
-// TESTS ==========================================================================================
 
 func (s *S) TestConfigContent(c *C) {
 
