@@ -1,12 +1,10 @@
 package config
 
 import (
-	. "launchpad.net/gocheck"
+	. "github.com/101loops/bdd"
 	"testing"
 )
 
-func Test(t *testing.T) { TestingT(t) }
-
-type S struct{}
-
-var _ = Suite(&S{})
+func TestSuite(t *testing.T) {
+	RunSpecs(t, "Config Suite")
+}

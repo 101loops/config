@@ -1,7 +1,7 @@
 package config
 
 import (
-	. "launchpad.net/gocheck"
+	. "github.com/101loops/bdd"
 	"strings"
 )
 
@@ -29,19 +29,21 @@ var configTests = []struct {
 	},
 }
 
-func (s *S) TestLoadingConfig(c *C) {
+var _ = Describe("Factory", func() {
 
-	for i, configTest := range configTests {
-		_, err := loadFromFiles("test", configTest.inputFiles)
+	It("create config from file", func() {
+		for i, configTest := range configTests {
+			_, err := loadFromFiles("test", configTest.inputFiles)
 
-		if err != nil {
-			if !configTest.shouldFail {
-				c.Fatalf("%d. Error parsing config %v: %v", i, configTest.inputFiles, err)
-			} else {
-				if !strings.Contains(err.Error(), configTest.errContains) {
-					c.Fatalf("%d. Expected error containing %q, got: %v", i, configTest.errContains, err)
+			if err != nil {
+				if !configTest.shouldFail {
+					CheckFail("%d. Error parsing config %v: %v", i, configTest.inputFiles, err)
+				} else {
+					if !strings.Contains(err.Error(), configTest.errContains) {
+						CheckFail("%d. Expected error containing %q, got: %v", i, configTest.errContains, err)
+					}
 				}
 			}
 		}
-	}
-}
+	})
+})

@@ -1,96 +1,100 @@
 package config
 
 import (
-	. "launchpad.net/gocheck"
+	. "github.com/101loops/bdd"
+	"fmt"
 	"os"
 )
 
 var testConf *Config
 
-func (s *S) SetUpTest(c *C) {
+func init() {
 	os.Setenv("MEMCACHE_PASSWORD", "secretpassword")
 
 	conf, err := loadFromFiles("test", "fixtures/shared.conf,fixtures/sample.conf")
 	if err != nil {
-		c.Fatalf("Error loading sample config: $v", err)
+		panic(fmt.Errorf("Error loading sample config: $v", err))
 	}
 
 	testConf = conf
 }
 
-func (s *S) TestConfigContent(c *C) {
+var _ = Describe("Config", func() {
 
-	// ==== extract single section
+	It("content", func() {
 
-	mail := testConf.SectionMust("mail")
-	mailPort, _ := mail.Int("port")
-	c.Assert(mailPort, Equals, 25)
-	mailHost, _ := mail.String("host")
-	c.Assert(mailHost, Equals, "smtp.mail.com")
+		// ==== extract single section
 
-	file := testConf.SectionMust("file")
-	fileSystem, _ := file.String("system")
-	c.Assert(fileSystem, Equals, "s3")
-	fileTmp, _ := file.Bool("tmp")
-	c.Assert(fileTmp, Equals, true)
+			mail := testConf.SectionMust("mail")
+			mailPort, _ := mail.Int("port")
+			Check(mailPort, Equals, 25)
+			mailHost, _ := mail.String("host")
+			Check(mailHost, Equals, "smtp.mail.com")
 
-	// ==== extract multiple sections
+			file := testConf.SectionMust("file")
+			fileSystem, _ := file.String("system")
+			Check(fileSystem, Equals, "s3")
+			fileTmp, _ := file.Bool("tmp")
+			Check(fileTmp, Equals, true)
 
-	caches := testConf.Sections("memcache")
-	c.Assert(caches, HasLen, 2)
+			// ==== extract multiple sections
 
-	memcache := caches["default"]
-	c.Assert(memcache, NotNil)
-	cacheHost, _ := memcache.String("host")
-	c.Assert(cacheHost, Equals, "memcache.com")
-	cachePass, _ := memcache.String("pass")
-	c.Assert(cachePass, Equals, "secretpassword")
+			caches := testConf.Sections("memcache")
+			Check(caches, HasLen, 2)
 
-	memcache = caches["backup"]
-	c.Assert(memcache, NotNil)
-	cacheHost, _ = memcache.String("host")
-	//c.Assert(cacheHost, Equals, "memcache.com")
-	cachePass, _ = memcache.String("pass")
-	//c.Assert(cachePass, Equals, "secretpassword")
+			memcache := caches["default"]
+			Check(memcache, NotNil)
+			cacheHost, _ := memcache.String("host")
+			Check(cacheHost, Equals, "memcache.com")
+			cachePass, _ := memcache.String("pass")
+			Check(cachePass, Equals, "secretpassword")
 
-	// ==== extract missing section
+			memcache = caches["backup"]
+			Check(memcache, NotNil)
+			cacheHost, _ = memcache.String("host")
+			//Check(cacheHost, Equals, "memcache.com")
+			cachePass, _ = memcache.String("pass")
+			//Check(cachePass, Equals, "secretpassword")
 
-	c.Assert(func() { testConf.SectionMust("nonsense") }, PanicMatches, "*does not have a section 'nonsense'")
-}
+			// ==== extract missing section
 
-func (s *S) TestEnv(c *C) {
-	cf, err := loadFromString("", "[profile] \n env: ")
-	c.Assert(err, IsNil)
-	c.Assert(cf.Env().IsDev(), Equals, true)
-	c.Assert(cf.Env().IsProd(), Equals, false)
-	c.Assert(cf.Env().IsTest(), Equals, false)
-	c.Assert(cf.Env().IsStage(), Equals, false)
+			Check(func() { testConf.SectionMust("nonsense") }, Panics)
+	})
 
-	cf, err = loadFromString("", "[profile] \n env: staging")
-	c.Assert(err, IsNil)
-	c.Assert(cf.Env().IsDev(), Equals, false)
-	c.Assert(cf.Env().IsProd(), Equals, false)
-	c.Assert(cf.Env().IsTest(), Equals, false)
-	c.Assert(cf.Env().IsStage(), Equals, true)
+	It("env", func() {
+		cf, err := loadFromString("", "[profile] \n env: ")
+		Check(err, IsNil)
+		Check(cf.Env().IsDev(), Equals, true)
+		Check(cf.Env().IsProd(), Equals, false)
+		Check(cf.Env().IsTest(), Equals, false)
+		Check(cf.Env().IsStage(), Equals, false)
 
-	cf, err = loadFromString("", "[profile] \n env: testing")
-	c.Assert(err, IsNil)
-	c.Assert(cf.Env().IsDev(), Equals, false)
-	c.Assert(cf.Env().IsProd(), Equals, false)
-	c.Assert(cf.Env().IsTest(), Equals, true)
-	c.Assert(cf.Env().IsStage(), Equals, false)
+		cf, err = loadFromString("", "[profile] \n env: staging")
+		Check(err, IsNil)
+		Check(cf.Env().IsDev(), Equals, false)
+		Check(cf.Env().IsProd(), Equals, false)
+		Check(cf.Env().IsTest(), Equals, false)
+		Check(cf.Env().IsStage(), Equals, true)
 
-	cf, err = loadFromString("", "[profile] \n env: development")
-	c.Assert(err, IsNil)
-	c.Assert(cf.Env().IsDev(), Equals, true)
-	c.Assert(cf.Env().IsProd(), Equals, false)
-	c.Assert(cf.Env().IsTest(), Equals, false)
-	c.Assert(cf.Env().IsStage(), Equals, false)
+		cf, err = loadFromString("", "[profile] \n env: testing")
+		Check(err, IsNil)
+		Check(cf.Env().IsDev(), Equals, false)
+		Check(cf.Env().IsProd(), Equals, false)
+		Check(cf.Env().IsTest(), Equals, true)
+		Check(cf.Env().IsStage(), Equals, false)
 
-	cf, err = loadFromString("", "[profile] \n env: production")
-	c.Assert(err, IsNil)
-	c.Assert(cf.Env().IsDev(), Equals, false)
-	c.Assert(cf.Env().IsProd(), Equals, true)
-	c.Assert(cf.Env().IsTest(), Equals, false)
-	c.Assert(cf.Env().IsStage(), Equals, false)
-}
+		cf, err = loadFromString("", "[profile] \n env: development")
+		Check(err, IsNil)
+		Check(cf.Env().IsDev(), Equals, true)
+		Check(cf.Env().IsProd(), Equals, false)
+		Check(cf.Env().IsTest(), Equals, false)
+		Check(cf.Env().IsStage(), Equals, false)
+
+		cf, err = loadFromString("", "[profile] \n env: production")
+		Check(err, IsNil)
+		Check(cf.Env().IsDev(), Equals, false)
+		Check(cf.Env().IsProd(), Equals, true)
+		Check(cf.Env().IsTest(), Equals, false)
+		Check(cf.Env().IsStage(), Equals, false)
+	})
+})
