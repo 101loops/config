@@ -3,4 +3,8 @@ go:
   - 1.1
   - 1.2
 
-script: - go test -v ./...
+install:
+  - go get launchpad.net/gocheck
+  - go get bitbucket.org/gosimple/conf
+
+script: go test -v ./...
