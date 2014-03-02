@@ -6,6 +6,5 @@ install:
   - go get bitbucket.org/gosimple/conf
 
 go:
-  - 1.0
   - 1.1
   - 1.2
