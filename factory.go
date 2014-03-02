@@ -25,7 +25,7 @@ func NewConf(prefix string, defaultFile string) (*Config, error) {
 
 func load(prefix string, defaultFile string) (*Config, error) {
 	configPath := flag.String("config", defaultFile, "path to the config file(s)")
-	log.Printf("loading configuration file(s): '%v'", *configPath)
+	log.Printf("loading configuration file(s): %q", *configPath)
 	return loadFromFiles(prefix, *configPath)
 }
 

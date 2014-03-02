@@ -43,7 +43,7 @@ func (s *S) TestLoadingConfig(c *C) {
 				c.Fatalf("%d. Error parsing config %v: %v", i, configTest.inputFiles, err)
 			} else {
 				if !strings.Contains(err.Error(), configTest.errContains) {
-					c.Fatalf("%d. Expected error containing '%v', got: %v", i, configTest.errContains, err)
+					c.Fatalf("%d. Expected error containing %q, got: %v", i, configTest.errContains, err)
 				}
 			}
 		}
