@@ -7,8 +7,7 @@ before_script:
   - go get -u code.google.com/p/go.tools/cmd/cover
 
 install:
-  - go get -u github.com/101loops/bdd
-  - go get -u github.com/gosimple/conf
+  - go get
 
 script:
   - go build
