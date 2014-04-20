@@ -1,144 +1,105 @@
 package config
 
 import (
-	"os"
+	goconf "github.com/gosimple/conf"
 	"strconv"
 	"strings"
 	"time"
 )
 
+// Section represents a named group of configuration options.
 type Section struct {
-	name string // e.g. files
-	id   string // e.g. s3
+	id   string // e.g. "s3"
+	name string // e.g. "files"
 	conf *Config
 }
 
-var (
-	cmdArgs map[string]string
-)
-
-// Id returns the unique identifier of the section ("default" by default).
-func (self *Section) Id() string {
-	return self.id
+// ID returns the unique identifier of the section ("default" by default).
+func (sect *Section) ID() string {
+	return sect.id
 }
 
 // Add adds a new option and value to the configuration.
-// It returns true if the option and value were inserted, and false if the value was overwritten.
-func (self *Section) Add(option string, value string) bool {
-	return self.conf.fileConf.AddOption(self.name, option, value)
+// It returns true if the option and value were inserted,
+// and false if the value was overwritten.
+func (sect *Section) Add(option string, value string) bool {
+	return sect.conf.fileConf.AddOption(sect.name, option, value)
 }
 
 // Bool returns the boolean value of the option;
 // or an error if the conversion failed / the value didn't exist.
-func (self *Section) Bool(option string) (res bool, err error) {
-	str, err := self.get(option)
+func (sect *Section) Bool(option string) (bool, error) {
+	str, err := sect.get(option)
 	if err != nil {
-		return res, err
-	}
-	if str == "true" {
-		return true, err
+		return false, err
 	}
 
-	return false, err
+	value, ok := goconf.BoolStrings[strings.ToLower(str)]
+	if !ok {
+		return false, goconf.GetError{goconf.CouldNotParse, "bool", str, sect.name, option}
+	}
+
+	return value, nil
 }
 
 // Float returns the decimal value of the option;
 // or an error if the conversion failed / the value didn't exist.
-func (self *Section) Float(option string) (res float64, err error) {
-	str, err := self.get(option)
-	if err == nil {
-		res, err = strconv.ParseFloat(str, 64)
+func (sect *Section) Float(option string) (float64, error) {
+	str, err := sect.get(option)
+	if err != nil {
+		return 0.0, err
 	}
-	return res, err
+
+	value, err := strconv.ParseFloat(str, 64)
+	if err != nil {
+		err = goconf.GetError{goconf.CouldNotParse, "float", str, sect.name, option}
+	}
+	return value, err
 }
 
 // Int returns the numeric value of the option;
 // or an error if the conversion failed / the value didn't exist.
-func (self *Section) Int(option string) (res int, err error) {
-	str, err := self.get(option)
-	if err == nil {
-		parsed, err := strconv.ParseInt(str, 10, 32)
-		return int(parsed), err
+func (sect *Section) Int(option string) (int, error) {
+	str, err := sect.get(option)
+	if err != nil {
+		return 0, err
 	}
-	return res, err
+
+	parsed, err := strconv.ParseInt(str, 10, 32)
+	return int(parsed), err
 }
 
-// String returns the text value of the option, or an error if it does not exist.
-func (self *Section) String(option string) (string, error) {
-	return self.get(option)
+// String returns the text value of the option;
+// or an error if it does not exist.
+func (sect *Section) String(option string) (string, error) {
+	return sect.get(option)
 }
 
 // Bytes returns the raw byte array of the option;
 // or an error if the conversion failed / the value didn't exist.
-func (self *Section) Bytes(option string) ([]byte, error) {
-	s, err := self.get(option)
-	if err == nil {
-		return []byte(s), nil
+func (sect *Section) Bytes(option string) ([]byte, error) {
+	str, err := sect.get(option)
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+
+	return []byte(str), nil
 }
 
 // Duration returns the time duration value of the option;
 // or an error if the conversion failed / the value didn't exist.
-func (self *Section) Duration(option string) (d time.Duration, err error) {
-	s, err := self.get(option)
-	if err == nil {
-		d, err = time.ParseDuration(s)
+func (sect *Section) Duration(option string) (time.Duration, error) {
+	str, err := sect.get(option)
+	if err != nil {
+		return time.Duration(0), err
 	}
-	return
+	return time.ParseDuration(str)
 }
 
-// PRIVATE METHODS ================================================================================
-
-func (self *Section) get(option string) (string, error) {
-
-	section := self.sectionName()
-	path := toPath(section, option)
-
-	// first: search command line arguments
-	res, ok := getArgs()[path]
-	if ok {
-		return res, nil
+func (sect *Section) get(option string) (string, error) {
+	name := sect.name
+	if sect.id != "" && sect.id != "default" {
+		name += "-" + sect.id
 	}
-
-	// second: search environment variable
-	res = os.Getenv(self.conf.prefix + "." + path)
-	if res != "" {
-		return res, nil
-	}
-
-	// finally: search file configuration
-	return self.conf.fileConf.String(section, option)
-}
-
-func (self *Section) sectionName() (s string) {
-	s = self.name
-	if self.id != "" && self.id != "default" {
-		s += "-" + self.id
-	}
-	return
-}
-
-func getArgs() map[string]string {
-	if cmdArgs == nil {
-		cmdArgs = make(map[string]string)
-		var name string
-		for _, arg := range os.Args {
-			if strings.HasPrefix(arg, "-") {
-				name = strings.TrimLeft(arg, "-")
-			}
-			if name != "" {
-				cmdArgs[name] = arg
-				name = ""
-			}
-		}
-	}
-	return cmdArgs
-}
-
-func toPath(section string, option string) string {
-	if section == "" || section == defaultSection {
-		return option
-	}
-	return section + "." + option
+	return sect.conf.get(name, option)
 }
