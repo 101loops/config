@@ -12,14 +12,16 @@ Noteworthy features:
 - merging multiple files
 
 
-### Installation
-`go get github.com/101loops/config`
+## Install
+```bash
+go get github.com/101loops/config
+```
 
-### Documentation
+## Documentation
 [godoc.org](http://godoc.org/github.com/101loops/config)
 
-### Credit
+## Credit
 The package creates functionality on top of https://bitbucket.org/gosimple/conf/
 
-### License
+## License
 MIT (see LICENSE).
