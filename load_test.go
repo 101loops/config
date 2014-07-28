@@ -1,8 +1,8 @@
 package config
 
 import (
-	. "github.com/101loops/bdd"
 	"strings"
+	. "github.com/101loops/bdd"
 )
 
 var configTests = []struct {

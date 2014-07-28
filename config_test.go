@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	. "github.com/101loops/bdd"
 	"os"
+	. "github.com/101loops/bdd"
 )
 
 var testConf *Config

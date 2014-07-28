@@ -2,9 +2,10 @@ package config
 
 import (
 	"fmt"
-	goconf "github.com/gosimple/conf"
 	"os"
 	"strings"
+
+	goconf "github.com/gosimple/conf"
 )
 
 const (

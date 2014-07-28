@@ -1,8 +1,8 @@
 package config
 
 import (
-	. "github.com/101loops/bdd"
 	"testing"
+	. "github.com/101loops/bdd"
 )
 
 func TestSuite(t *testing.T) {

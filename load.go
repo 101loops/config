@@ -1,8 +1,9 @@
 package config
 
 import (
-	goconf "github.com/gosimple/conf"
 	"io/ioutil"
+
+	goconf "github.com/gosimple/conf"
 )
 
 // New creates a Config from config files;

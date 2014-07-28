@@ -1,10 +1,11 @@
 package config
 
 import (
-	goconf "github.com/gosimple/conf"
 	"strconv"
 	"strings"
 	"time"
+
+	goconf "github.com/gosimple/conf"
 )
 
 // Section represents a named group of configuration options.
